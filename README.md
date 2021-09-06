@@ -7,6 +7,8 @@ Send the location from Android app and view it on web browser.
 
 ## Preparation of server
 Copy all files in "/server/var/www/html/mylocation/" directory to "/var/www/html/mylocation/" directory on the server and adjust their permissions.
+Replace "<Your API key>" to your API key in "map.php".
+You need to pay money to Google for using "map.php".
 
 ## Preparation of Android application
 Choice "android4.4/"(for Android 4.4) or "android5/"(for Android 5).
@@ -27,6 +29,8 @@ http://&lt;server name&gt;/mylocation/
 
 ## サーバの準備
 標準的には"/server/var/www/html/mylocation/"ディレクトリ内のファイルをサーバの"/var/www/html/mylocation/"ディレクトリにコピーし、パーミッションを整える。
+"map.php"内の"<Your API key>"をAPIキーに置き換える。
+"map.php"を使うにはGoogleに費用を支払いう必要がある。
 
 ## Androidアプリケーションの準備
 "android4.4/"(Android 4.4向け)か"android5/"(Android 5向け)のどちらかを選び、
