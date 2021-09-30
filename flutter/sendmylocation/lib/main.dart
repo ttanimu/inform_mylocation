@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -9,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'SendMyLocation',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -22,7 +25,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'SendMyLocation'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -46,17 +50,63 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  String _msg = "";
 
-  void _incrementCounter() {
+  Future<void> _getLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    _sendLocation(position);
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _msg = position.toString();
     });
+  }
+
+  Future<void> _sendLocation(Position position) async {
+    Uri url = Uri.parse('https://<server name>/mylocation/setlocation.php?'
+        'x=${position.longitude.toString()}&y=${position.latitude.toString()}');
+    http.Response response = await http.get(url);
+    setState(() {
+      _msg = url.toString();
+    });
+  }
+
+  Future<void> checkLocationService() async {
+    bool srvLoc;
+    LocationPermission prm;
+    String msg;
+
+    srvLoc = await Geolocator.isLocationServiceEnabled();
+    if(!srvLoc){
+      msg='Location services : disabled';
+      return;
+    }
+    prm = await Geolocator.checkPermission();
+    if (prm == LocationPermission.denied) {
+      prm = await Geolocator.requestPermission();
+      if (prm == LocationPermission.denied) {
+        msg='Location permissions : denied';
+      }
+    }
+    msg='push button';
+    setState(() {
+      _msg = msg;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkLocationService();
+    StreamSubscription<Position> ps = Geolocator.getPositionStream(
+      desiredAccuracy: LocationAccuracy.high,
+      distanceFilter: 10,
+      intervalDuration: Duration(seconds: 10),
+    ).listen(
+            (Position position) {
+          _sendLocation(position);
+        }
+    );
   }
 
   @override
@@ -94,19 +144,19 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'Message or URL',
             ),
             Text(
-              '$_counter',
+              '$_msg',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+        onPressed: _getLocation,
+        tooltip: 'Get&send Location',
+        child: Icon(Icons.location_on),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

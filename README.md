@@ -11,7 +11,8 @@ Replace "<Your API key>" to your API key in "map.php".
 You need to pay money to Google for using "map.php".
 
 ## Preparation of Android application
-Choice "android4.4/"(for Android 4.4) or "android5/"(for Android 5).
+Choice "android4.4/"(for Android 4.4), "android5/"(for Android 5)
+or "flutter/"(using Flutter).
 Open "sendmylocation" on its directory as project by [Android Studio].
 Replace the string "<server name>" to server name(or IP address) made on the previous section(you can't use "http:" because of Android security).
 Build APK file.
@@ -33,7 +34,8 @@ http://&lt;server name&gt;/mylocation/
 "map.php"を使うにはGoogleに費用を支払いう必要がある。
 
 ## Androidアプリケーションの準備
-"android4.4/"(Android 4.4向け)か"android5/"(Android 5向け)のどちらかを選び、
+"android4.4/"(Android 4.4向け)か"android5/"(Android 5向け)、
+または"flutter/"(Flutter利用)のどれかを選び、
 その下の"sendmylocation"をAndroid Studioでプロジェクトとして開く。
 "<server name>"を先に準備したサーバのサーバ名(またはIPアドレス)に置き換える
 (Android側のセキュリティ設定のため"http:"は使えない)。
